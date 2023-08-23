@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws SQLException{
+    public static void main(String[] args) throws SQLException {
         System.out.println("-----DAO Personas-----");
         System.out.println();
         List<String> nombres = PersonaDAO.listarNombres();
@@ -22,6 +22,16 @@ public class Main {
         } else {
             System.out.println("No se encontraron personas con el apellido '" + apellido + "'.");
         }
+        System.out.println();
+        System.out.println("---------- DAO Persona ----------");
+        System.out.println();
+
+        int cuenta = PersonaDAO.cuentaPersonas();
+
+        if (cuenta > 0) {
+            System.out.println("Hay " + cuenta + " registros en la tabla PERSONA");
+        } else {
+            System.out.println("No hay registros en la tabla PERSONA");
         /*String documento = JOptionPane.showInputDialog("Documento: ");
         String apellido1 = JOptionPane.showInputDialog("Apellido1: ");
         String apellido2 = JOptionPane.showInputDialog("Apellido2: ");
@@ -30,5 +40,6 @@ public class Main {
 
         personaDAO.agregarRegistro(documento, apellido1, apellido2, nombre1, nombre2);
         List<Persona> personas = personaDAO.listarPersonas();*/
+        }
     }
 }

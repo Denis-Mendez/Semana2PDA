@@ -1,8 +1,8 @@
 package org.example;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Locale;
 
 public class DatabaseManager {
     public static Connection databaseConnection;
@@ -11,7 +11,7 @@ public class DatabaseManager {
     private static String contra = "root";
 
 
-    static{
+    static {
         try {
             Class.forName("oracle.jdbc.OracleDriver");
             System.out.println("Se encontró el Driver exitosamente");
@@ -20,7 +20,7 @@ public class DatabaseManager {
             } catch (SQLException e) {
                 System.out.println("Error al conectarse a la Base de datos");
                 System.out.println(e.getErrorCode());
-                System.err.format("SQL state: %s \n %s",e.getSQLState(), e.getMessage());
+                System.err.format("SQL state: %s \n %s", e.getSQLState(), e.getMessage());
                 e.printStackTrace();
             }
         } catch (ClassNotFoundException cnfex) {
@@ -29,7 +29,7 @@ public class DatabaseManager {
         }
     }
 
-    public static Connection getConnection(){
+    public static Connection getConnection() {
         return databaseConnection;
     }
 

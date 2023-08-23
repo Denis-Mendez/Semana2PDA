@@ -9,8 +9,5 @@
         <module name="Agregar_Personas" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Agregar_Personas" target="17" />
-    </bytecodeTargetLevel>
   </component>
 </project>

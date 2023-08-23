@@ -1,11 +1,11 @@
 package org.example;
 
-import javax.xml.transform.Result;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.example.DatabaseManager.databaseConnection;
 
 public class PersonaDAO {
     private static final String INSERT_PERSONA = "INSERT INTO PERSONA (ID_PERSONA, DOCUMENTO, APELLIDO1, APELLIDO2, NOMBRE1, NOMBRE2) VALUES (?, ?, ?, ?, ?, ?)";
@@ -14,7 +14,25 @@ public class PersonaDAO {
     private static final String LISTAR_POR_APELLIDO = "SELECT * FROM PERSONA WHERE APELLIDO1 = ?";
 //    private static final String AGREGAR_REGISTRO = "INSERT INTO PERSONA (ID_PERSONA, DOCUMENTO, APELLIDO1, APELLIDO2, NOMBRE1, NOMBRE2) VALUES (SEQ_PERSONA.NEXTVAL, ?, ?, ?, ?, ?)";
 
-    public static boolean agregarPersona(Persona persona){
+    private static final String CUENTA_PERSONAS = "SELECT COUNT (ID_PERSONA) AS CUENTA FROM PERSONA";
+
+    public static int cuentaPersonas() {
+        int cuenta = 0;
+
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(CUENTA_PERSONAS);
+            ResultSet resultado = statement.executeQuery();
+
+            while (resultado.next()) {
+                cuenta = resultado.getInt("CUENTA");
+            }
+        } catch (SQLException sqlex) {
+            sqlex.printStackTrace();
+        }
+        return cuenta;
+    }
+
+    public static boolean agregarPersona(Persona persona) {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(INSERT_PERSONA)) {
             statement.setString(1, persona.getIdPersona());
             statement.setString(2, persona.getDocumento());
@@ -24,7 +42,7 @@ public class PersonaDAO {
             statement.setString(6, persona.getNombre2());
             int retorno = statement.executeUpdate();
 
-            return retorno>0;
+            return retorno > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -62,6 +80,7 @@ public class PersonaDAO {
         }
         return nombres;
     }
+
     public static List<Persona> listarPersonasPorApellido(String apellido) throws SQLException {
         List<Persona> personasConApellido = new ArrayList<>();
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(LISTAR_POR_APELLIDO)) {
@@ -87,7 +106,7 @@ public class PersonaDAO {
 
     }*/
 
-    private static Persona getResultFromPersonaRS(ResultSet resultSet) throws SQLException{
+    private static Persona getResultFromPersonaRS(ResultSet resultSet) throws SQLException {
         String id = resultSet.getString("ID_PERSONA");
         String documento = resultSet.getString("DOCUMENTO");
         String apellido1 = resultSet.getString("APELLIDO1");
@@ -98,6 +117,6 @@ public class PersonaDAO {
         return persona;
     }
 
-    }
+}
 
 

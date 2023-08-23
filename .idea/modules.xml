@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Agregar_Personas/Agregar_Personas.iml" filepath="$PROJECT_DIR$/Agregar_Personas/Agregar_Personas.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Semana2PDA.iml" filepath="$PROJECT_DIR$/.idea/Semana2PDA.iml" />
     </modules>
   </component>
