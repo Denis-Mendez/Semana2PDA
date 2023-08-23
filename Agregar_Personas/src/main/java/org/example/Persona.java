@@ -1,14 +1,14 @@
 package org.example;
 
 public class Persona {
-        private String idPersona;
+        private int idPersona;
         private String documento;
         private String apellido1;
         private String apellido2;
         private String nombre1;
         private String nombre2;
 
-        public Persona(String idPersona, String documento, String apellido1, String apellido2, String nombre1, String nombre2) {
+        public Persona(int idPersona, String documento, String apellido1, String apellido2, String nombre1, String nombre2) {
             this.idPersona = idPersona;
             this.documento = documento;
             this.apellido1 = apellido1;
@@ -17,7 +17,7 @@ public class Persona {
             this.nombre2 = nombre2;
         }
 
-        public String getIdPersona() {
+        public int getIdPersona() {
             return idPersona;
         }
 
@@ -41,7 +41,7 @@ public class Persona {
             return nombre2;
         }
 
-        public void setIdPersona(String idPersona) {
+        public void setIdPersona(int idPersona) {
             this.idPersona = idPersona;
         }
 

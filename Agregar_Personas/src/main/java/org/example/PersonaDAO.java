@@ -1,52 +1,52 @@
 package org.example;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.DatabaseManager.databaseConnection;
-
 public class PersonaDAO {
-    private static final String INSERT_PERSONA = "INSERT INTO PERSONA (ID_PERSONA, DOCUMENTO, APELLIDO1, APELLIDO2, NOMBRE1, NOMBRE2) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String LISTAR_PERSONAS = "SELECT * FROM PERSONA";
-    private static final String LISTAR_NOMBRES = "SELECT NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, DOCUMENTO FROM PERSONA";
-    private static final String LISTAR_POR_APELLIDO = "SELECT * FROM PERSONA WHERE APELLIDO1 = ?";
-//    private static final String AGREGAR_REGISTRO = "INSERT INTO PERSONA (ID_PERSONA, DOCUMENTO, APELLIDO1, APELLIDO2, NOMBRE1, NOMBRE2) VALUES (SEQ_PERSONA.NEXTVAL, ?, ?, ?, ?, ?)";
+    private Connection connection;
 
-    public static boolean agregarPersona(Persona persona){
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(INSERT_PERSONA)) {
-            statement.setString(1, persona.getIdPersona());
+    public PersonaDAO(Connection connection) {
+        this.connection = connection;
+    }
+
+    public void agregarPersona(Persona persona) throws SQLException {
+        String sql = "INSERT INTO PERSONA (ID_PERSONA, DOCUMENTO, APELLIDO1, APELLIDO2, NOMBRE1, NOMBRE2) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, persona.getIdPersona());
             statement.setString(2, persona.getDocumento());
             statement.setString(3, persona.getApellido1());
             statement.setString(4, persona.getApellido2());
             statement.setString(5, persona.getNombre1());
             statement.setString(6, persona.getNombre2());
-            int retorno = statement.executeUpdate();
-
-            return retorno>0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            statement.executeUpdate();
         }
     }
 
-    public static List<Persona> listarPersonas() throws SQLException {
+    public List<Persona> listarPersonas() throws SQLException {
         List<Persona> personas = new ArrayList<>();
-        try (Statement statement = DatabaseManager.getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(LISTAR_PERSONAS)) {
+        String sql = "SELECT * FROM PERSONA";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
-                Persona persona = getResultFromPersonaRS(resultSet);
-                personas.add(persona);
+                int id = resultSet.getInt("ID_PERSONA");
+                String documento = resultSet.getString("DOCUMENTO");
+                String apellido1 = resultSet.getString("APELLIDO1");
+                String apellido2 = resultSet.getString("APELLIDO2");
+                String nombre1 = resultSet.getString("NOMBRE1");
+                String nombre2 = resultSet.getString("NOMBRE2");
+                personas.add(new Persona(id, documento, apellido1, apellido2, nombre1, nombre2));
             }
         }
         return personas;
     }
 
-    public static List<String> listarNombres() throws SQLException {
+    public List<String> listarNombres() throws SQLException {
         List<String> nombres = new ArrayList<>();
-        try (Statement statement = DatabaseManager.getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(LISTAR_NOMBRES)) {
+        String sql = "SELECT NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, DOCUMENTO FROM PERSONA";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 String nombre1 = resultSet.getString("NOMBRE1");
                 String nombre2 = resultSet.getString("NOMBRE2");
@@ -62,21 +62,28 @@ public class PersonaDAO {
         }
         return nombres;
     }
-    public static List<Persona> listarPersonasPorApellido(String apellido) throws SQLException {
+    public List<Persona> listarPersonasPorApellido(String apellido) throws SQLException {
         List<Persona> personasConApellido = new ArrayList<>();
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(LISTAR_POR_APELLIDO)) {
+        String sql = "SELECT * FROM PERSONA WHERE APELLIDO1 = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, apellido);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    Persona persona = getResultFromPersonaRS(resultSet);
-                    personasConApellido.add(persona);
+                    int id = resultSet.getInt("ID_PERSONA");
+                    String documento = resultSet.getString("DOCUMENTO");
+                    String apellido1 = resultSet.getString("APELLIDO1");
+                    String apellido2 = resultSet.getString("APELLIDO2");
+                    String nombre1 = resultSet.getString("NOMBRE1");
+                    String nombre2 = resultSet.getString("NOMBRE2");
+                    personasConApellido.add(new Persona(id, documento, apellido1, apellido2, nombre1, nombre2));
                 }
             }
         }
         return personasConApellido;
     }
-/*    public void agregarRegistro(String documento, String apellido1, String apellido2, String nombre1, String nombre2) throws SQLException {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(AGREGAR_REGISTRO)) {
+    public void agregarRegistro(String documento, String apellido1, String apellido2, String nombre1, String nombre2) throws SQLException {
+        String sql = "INSERT INTO PERSONA (ID_PERSONA, DOCUMENTO, APELLIDO1, APELLIDO2, NOMBRE1, NOMBRE2) VALUES (SEQ_PERSONA.NEXTVAL, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, documento);
             statement.setString(2, apellido1);
             statement.setString(3, apellido2);
@@ -85,18 +92,8 @@ public class PersonaDAO {
             statement.executeUpdate();
         }
 
-    }*/
-
-    private static Persona getResultFromPersonaRS(ResultSet resultSet) throws SQLException{
-        String id = resultSet.getString("ID_PERSONA");
-        String documento = resultSet.getString("DOCUMENTO");
-        String apellido1 = resultSet.getString("APELLIDO1");
-        String apellido2 = resultSet.getString("APELLIDO2");
-        String nombre1 = resultSet.getString("NOMBRE1");
-        String nombre2 = resultSet.getString("NOMBRE2");
-        Persona persona = new Persona(id, documento, apellido1, apellido2, nombre1, nombre2);
-        return persona;
     }
+
 
     }
 
